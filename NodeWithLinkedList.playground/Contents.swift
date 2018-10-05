@@ -1,10 +1,10 @@
 import UIKit
 
-public class Node<T> {
-    public var value: T
+public class Node<Value> {
+    public var value: Value
     public var next: Node?
     
-    init(value: T, next: Node? = nil) {
+    public init(value: Value, next: Node? = nil) {
         self.value = value
         self.next = next
     }
@@ -15,33 +15,37 @@ extension Node: CustomStringConvertible {
         guard let next = next else {
             return "\(value)"
         }
-        
         return "\(value) -> " + String(describing: next) + " "
     }
 }
 
-public struct LinkedList<T> {
-    public var head: Node<T>?
-    public var tail: Node<T>?
+let node1 = Node(value: 10)
+let node2 = Node(value: 20)
+let node3 = Node(value: 30)
+
+node1.next = node2
+node2.next = node3
+
+print(node1)
+
+public struct LinkedList<Value> {
+    public var head: Node<Value>?
+    public var tail: Node<Value>?
     
-    init() {
-        
-    }
+    public init () { }
     
     public var isEmpty: Bool {
         return head == nil
     }
     
-    public mutating func push(_ value: T) {
-        
+    public mutating func push(_ value: Value) {
         head = Node(value: value, next: head)
-        
-        if tail == nil {
+        if (tail == nil) {
             tail = head
         }
     }
     
-    public mutating func append(_ value: T) {
+    public mutating func append(_ value: Value) {
         // 1
         guard !isEmpty else {
             push(value)
@@ -55,7 +59,7 @@ public struct LinkedList<T> {
         tail = tail!.next
     }
     
-    public func node(at index: Int) -> Node<T>? {
+    public mutating func node(at index: Int) -> Node<Value>? {
         var currentNode = head
         var currentIndex = 0
         
@@ -63,12 +67,10 @@ public struct LinkedList<T> {
             currentNode = currentNode?.next
             currentIndex += 1
         }
-        
         return currentNode
     }
     
-    @discardableResult
-    public mutating func insert(_ value: T, after node: Node<T>) -> Node<T> {
+    public mutating func insert(_ value: Value, after node: Node<Value>) -> Node<Value> {
         guard tail !== node else {
             append(value)
             return tail!
@@ -77,53 +79,23 @@ public struct LinkedList<T> {
         node.next = Node(value: value, next: node.next)
         return node.next!
     }
-    
-    @discardableResult
-    public mutating func pop() -> T? {
-        defer {
-            head = head?.next
-            if isEmpty {
-                tail = nil
-            }
-        }
-        return head?.value
-    }
-    
 }
 
 extension LinkedList: CustomStringConvertible {
     public var description: String {
         guard let head = head else {
-            return "Empty List"
+            return "Empty list"
         }
         return String(describing: head)
     }
 }
 
+var pushList = LinkedList<Int>()
+pushList.push(3)
+pushList.push(2)
+pushList.push(1)
 
-
-
-let node1 = Node(value: 1)
-let node2 = Node(value: 2)
-let node3 = Node(value: 3, next: nil)
-
-node1.next = node2
-node2.next = node3
-
-var list = LinkedList<Int>()
-list.push(1)
-list.push(2)
-list.push(3)
-list.append(4)
-
-var middleNode = list.node(at: 1)!
-for _ in 1...4 {
-    middleNode = list.insert(2, after: middleNode)
-}
-
-print(list)
-
-let poppedValue = list.pop()
-print("\(poppedValue!)")
-
-print(list)
+var appendList = LinkedList<Int>()
+appendList.append(1)
+appendList.append(2)
+appendList.append(3)
